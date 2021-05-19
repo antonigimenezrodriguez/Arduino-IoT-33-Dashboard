@@ -152,14 +152,17 @@ void startUbiDots() {
   printWiFiStatus();
 }
 
-void sendValuesToUbiDots(float humidity, float temperature, float computeHeat, float water, int distance) {
-  
+void sendValuesToUbiDots(float humidity, float temperature, float computeHeat, float water, int distance, float X_out, float Y_out, float Z_out) {
+
   char payload[200];
   char str_val_humidity[30];
   char str_val_temperature[30];
   char str_val_computeHeat[30];
   char str_val_water[30];
   char str_val_distance[30];
+  char str_val_xOut[30];
+  char str_val_yOut[30];
+  char str_val_zOut[30];
 
   /*4 is the total lenght of number,maximun number accepted is 99.99*/
   dtostrf(humidity, 4, 2, str_val_humidity);
@@ -167,7 +170,10 @@ void sendValuesToUbiDots(float humidity, float temperature, float computeHeat, f
   dtostrf(computeHeat, 4, 2, str_val_computeHeat);
   dtostrf(water, 4, 2, str_val_water);
   dtostrf(distance, 4, 2, str_val_distance);
-  
+  dtostrf(X_out, 5, 2, str_val_xOut);
+  dtostrf(Y_out, 5, 2, str_val_yOut);
+  dtostrf(Z_out, 5, 2, str_val_zOut);
+
   sprintf(payload, "%s", "");
   sprintf(payload, "{\"");
   sprintf(payload, "%s%s\":%s", payload, "humidity", str_val_humidity);
@@ -179,6 +185,12 @@ void sendValuesToUbiDots(float humidity, float temperature, float computeHeat, f
   sprintf(payload, "%s%s\":%s", payload, "water", str_val_water);
   sprintf(payload, "%s,\"", payload);
   sprintf(payload, "%s%s\":%s", payload, "distance", str_val_distance);
+  sprintf(payload, "%s,\"", payload);
+  sprintf(payload, "%s%s\":%s", payload, "gyroscopeX", str_val_xOut);
+  sprintf(payload, "%s,\"", payload);
+  sprintf(payload, "%s%s\":%s", payload, "gyroscopeY", str_val_yOut);
+  sprintf(payload, "%s,\"", payload);
+  sprintf(payload, "%s%s\":%s", payload, "gyroscopeZ", str_val_zOut);
   sprintf(payload, "%s}", payload);
 
   Serial.println("--------------------------------------------------");

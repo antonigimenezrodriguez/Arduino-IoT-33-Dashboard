@@ -7,14 +7,13 @@ void setup() {
   Serial.begin(115200);
   while (!Serial) {}
   startSensors();
-  // startThingSepak();
-  // startUbiDots();
+  startThingSepak();
+  startUbiDots();
   delay(10);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  //delay(1000);
 
   float DHTValues[3];
   getDHTValues(DHTValues);
@@ -34,6 +33,6 @@ void loop() {
   delay(1000);
 
   Serial.println();
-  // sentValueToThingSpeak(h, t, hic, water, cm);
-  // sendValuesToUbiDots(h, t, hic, water, cm);
+  sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
+  sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
 }

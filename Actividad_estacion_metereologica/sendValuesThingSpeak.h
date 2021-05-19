@@ -30,7 +30,7 @@ void startThingSepak() {
   ThingSpeak.begin(client);  //Initialize ThingSpeak
 }
 
-void sentValueToThingSpeak(float humidity, float temperature, float computeHeat, float water, int distance) {
+void sentValueToThingSpeak(float humidity, float temperature, float computeHeat, float water, int distance, float X_out, float Y_out, float Z_out) {
   // Connect or reconnect to WiFi
   if (WiFi.status() != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
@@ -49,6 +49,9 @@ void sentValueToThingSpeak(float humidity, float temperature, float computeHeat,
   ThingSpeak.setField(COMPUTE_HEAT_CHART, computeHeat);
   ThingSpeak.setField(WATER_CHART, water);
   ThingSpeak.setField(DISTANCE_CHART, distance);
+  ThingSpeak.setField(GYROSCOPE_AXIS_X_CHART, X_out);
+  ThingSpeak.setField(GYROSCOPE_AXIS_Y_CHART, Y_out);
+  ThingSpeak.setField(GYROSCOPE_AXIS_Z_CHART, Z_out);
 
 
   // set the status
@@ -61,6 +64,4 @@ void sentValueToThingSpeak(float humidity, float temperature, float computeHeat,
   else {
     Serial.println("Problem updating channel. HTTP error code " + String(x));
   }
-
-
 }
