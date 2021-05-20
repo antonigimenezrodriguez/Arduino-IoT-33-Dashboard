@@ -7,8 +7,8 @@ void setup() {
   Serial.begin(115200);
   while (!Serial) {}
   startSensors();
- // startThingSepak();
- // startUbiDots();
+  startThingSepak();
+  startUbiDots();
   delay(10);
 }
 
@@ -32,6 +32,6 @@ void loop() {
   delay(2000);
 
   Serial.println();
- // sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
-//  sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
+  sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
+  sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
 }
