@@ -1,4 +1,6 @@
-#include <Wire.h>  // Wire library - used for I2C communication
+#include <SPI.h>
+#include <Wire.h>
+#include <SparkFun_ADXL345.h>
 #include "DHT.h"
 #include <NewPing.h>
 
@@ -16,36 +18,33 @@
 
 DHT dht(DHTPIN, DHTTYPE);
 NewPing sonar(DISTTRIGPIN, DISTECHOPIN, 200);
+ADXL345 adxl = ADXL345();
 
-int ADXL345 = 0x53; //60 6A The ADXL345 sensor I2C address
-float X_out, Y_out, Z_out;  // Outputs
+
 
 void startSensors() {
+
+  Serial.begin(9600);
+  Serial.println("Iniciando Sensores");
+  Serial.println();
   dht.begin();
-  Wire.begin(); // Initiate the Wire library
-  // Set ADXL345 in measuring mode
-  Wire.beginTransmission(ADXL345); // Start communicating with the device
-  Wire.write(0x2D); // Access/ talk to POWER_CTL Register - 0x2D
-  // Enable measurement
-  Wire.write(8); // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable
-  Wire.endTransmission();
+  adxl.powerOn();
+  adxl.setRangeSetting(16);       //Definir el rango, valores 2, 4, 8 o 16
+  Serial.println("Sensores iniciados correctamente");
 }
 
-void getDHTValues(float gyroscopeValues[]) {
-  float h = dht.readHumidity();
+void getDHTValues(float &hum, float &tem, float &comHeat ) {
+  hum = dht.readHumidity();
   Serial.print("Humidity: ");
-  Serial.println(h);
+  Serial.println(hum);
   // Read temperature as Celsius (the default)
-  float t = dht.readTemperature();
+  tem = dht.readTemperature();
   Serial.print("Temperature: ");
-  Serial.println(t);
+  Serial.println(tem);
   // Compute heat index in Celsius (isFahreheit = false)
-  float hic = dht.computeHeatIndex(t, h, false);
+  comHeat = dht.computeHeatIndex(tem, hum, false);
   Serial.print("Compute Heat: ");
-  Serial.println(hic);
-  gyroscopeValues[0] = h;
-  gyroscopeValues[1] = t;
-  gyroscopeValues[2] = hic;
+  Serial.println(comHeat);
 }
 
 
@@ -72,28 +71,14 @@ unsigned int getDistance() {
   return cm;
 }
 
-void getGyroscopeValues(float gyroscopeValues[]) {
-  // === Read acceleromter data === //
-  Wire.beginTransmission(ADXL345);
-  Wire.write(0x32); // Start with register 0x32 (ACCEL_XOUT_H)
-  Wire.endTransmission(false);
-  Wire.requestFrom(ADXL345, 6, true); // Read 6 registers total, each axis value is stored in 2 registers
-  X_out = ( Wire.read() | Wire.read() << 8); // X-axis value
-  X_out = X_out / 256; //For a range of +-2g, we need to divide the raw values by 256, according to the datasheet
-  Y_out = ( Wire.read() | Wire.read() << 8); // Y-axis value
-  Y_out = Y_out / 256;
-  Z_out = ( Wire.read() | Wire.read() << 8); // Z-axis value
-  Z_out = Z_out / 256;
+void getGyroscopeValues(int &x, int &y, int &z) {
+  
+  adxl.readAccel(&x, &y, &z);
+
   Serial.print("Xa= ");
-  Serial.print(X_out);
-
+  Serial.print(x);
   Serial.print("   Ya= ");
-  Serial.print(Y_out);
-
-
+  Serial.print(y);
   Serial.print("   Za= ");
-  Serial.println(Z_out);
-  gyroscopeValues[0] = X_out;
-  gyroscopeValues[1] = Y_out;
-  gyroscopeValues[2] = Z_out;
+  Serial.println(z);
 }

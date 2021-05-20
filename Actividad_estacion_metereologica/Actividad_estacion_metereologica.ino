@@ -7,32 +7,31 @@ void setup() {
   Serial.begin(115200);
   while (!Serial) {}
   startSensors();
-  startThingSepak();
-  startUbiDots();
+ // startThingSepak();
+ // startUbiDots();
   delay(10);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-  float DHTValues[3];
-  getDHTValues(DHTValues);
-  float h = DHTValues[0];
-  float t = DHTValues[1];
-  float hic = DHTValues[2];
+  float h = 0.00;
+  float t = 0.00;
+  float hic = 0.00;
+  getDHTValues(h,t,hic);
   
   float water = getWater();
   
   unsigned int cm = getDistance();
   
-  float gyroscopeValues[3];
-  getGyroscopeValues(gyroscopeValues);
-  float X_out = gyroscopeValues[0];
-  float Y_out = gyroscopeValues[1];
-  float Z_out = gyroscopeValues[2];
-  delay(1000);
+  int X_out = 0;
+  int Y_out = 0;
+  int Z_out = 0;
+  getGyroscopeValues(X_out, Y_out,Z_out);
+
+  delay(2000);
 
   Serial.println();
-  sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
-  sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
+ // sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
+//  sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
 }
