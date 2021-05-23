@@ -29,9 +29,10 @@ void loop() {
   int Z_out = 0;
   getGyroscopeValues(X_out, Y_out,Z_out);
 
-  delay(2000);
 
   Serial.println();
   sentValueToThingSpeak(h, t, hic, water, cm, X_out, Y_out, Z_out);
   sendValuesToUbiDots(h, t, hic, water, cm, X_out, Y_out, Z_out);
+   delay(2500);
+
 }
